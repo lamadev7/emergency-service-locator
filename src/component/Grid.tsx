@@ -39,7 +39,7 @@ function Grid({ grid, onGridUpdate, setLoading, setNearestServiceInfo }) {
                 row.map((cell, colIndex) => (
                     <div
                         key={`${rowIndex}-${colIndex}`}
-                        className={`w-12 h-12 flex items-center justify-center border ${cell === "X"
+                        className={`w-10 h-10 flex items-center justify-center border ${cell === "X"
                             ? "bg-red-500 text-white"
                             : cell === "Y"
                                 ? "bg-blue-500 text-white"

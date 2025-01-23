@@ -1,21 +1,25 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { getServiceAvailability, updateServiceAvailability } from "../services/index.ts";
+import { toast } from 'react-toastify';
 import { setNearestServiceInfo } from "../redux/slices/index.ts";
+import { getServiceAvailability, updateServiceAvailability } from "../services/index.ts";
 
 function NearestServiceDisplay({ nearestServiceInfo }) {
     const dispatch = useDispatch();
     const { serviceType, distance, location, status, id } = nearestServiceInfo;
+    const isServiceOpen = status === "open";
 
     const handleStatusToggle = async () => {
         try {
-            const newStatus = status === "open" ? "close" : "open";
+            const newStatus = isServiceOpen ? "close" : "open";
 
             await updateServiceAvailability(id, newStatus);
             const serviceInfo = await getServiceAvailability(id);
-            dispatch(setNearestServiceInfo({ ...nearestServiceInfo, status: serviceInfo?.status }))
+            dispatch(setNearestServiceInfo({ ...nearestServiceInfo, status: serviceInfo?.status }));
+            toast.success("Status updated successfully!");
         } catch (error) {
             console.error("Error updating service status:", error);
+            toast.success(error?.message ?? 'Error updating status!');
         }
     };
 
@@ -38,9 +42,9 @@ function NearestServiceDisplay({ nearestServiceInfo }) {
                 {status && (
                     <button
                         onClick={handleStatusToggle}
-                        className="px-4 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+                        className={`px-4 py-1 text-sm ${isServiceOpen ? 'bg-red-500' : 'bg-blue-500'} text-white rounded hover:opacity-10`}
                     >
-                        {status === "open" ? "Close" : "Open"}
+                        {isServiceOpen ? "Close" : "Open"}
                     </button>
                 )}
             </div>
