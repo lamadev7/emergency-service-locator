@@ -1,4 +1,4 @@
-# React 18 Setup Project
+# Emergency Service locator Frontend
 
 This is a React 18 project bootstrapped with `create-react-app` and TypeScript. The project includes tools and libraries for state management, API calls, routing, and styling.
 
