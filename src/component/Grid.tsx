@@ -1,18 +1,24 @@
 import React, { useState } from "react";
+import { getCellStyles } from "../utils/index.ts";
 import { calculateNearestService } from "../services/index.ts";
 
 function Grid({ grid, onGridUpdate, setLoading, setNearestServiceInfo }) {
-    const [nearestService, setNearestService] = useState(null); // Store nearest service cell coordinates
-    const [path, setPath] = useState([]); // Store the path cells
+    const [nearestService, setNearestService] = useState(null); // Stores the nearest service details
+    const [path, setPath] = useState([]); // Stores the path cells
 
-    const handleCellClick = async (row, col) => {
+    // Handles the cell click event
+    const handleCellClick = async (row: number, col: number) => {
         try {
             setLoading(true);
-            const newValue = "U";
-            onGridUpdate(row, col, newValue);
-            const res = await calculateNearestService([row, col]);
-            const nearestService = res?.nearestService;
 
+            // Update the grid with the selected cell value
+            onGridUpdate(row, col, "U");
+
+            // Fetch nearest service and path information
+            const response = await calculateNearestService([row, col]);
+            const { nearestService, path } = response || {};
+
+            // Update nearest service details
             if (nearestService) {
                 setNearestService(nearestService);
                 setNearestServiceInfo({
@@ -23,44 +29,31 @@ function Grid({ grid, onGridUpdate, setLoading, setNearestServiceInfo }) {
                     status: nearestService.status,
                 });
             }
-            if (res?.path) setPath(res.path);
 
-
+            // Update the path if available
+            if (path) setPath(path);
         } catch (error) {
-            console.error(error)
+            console.error("Error fetching nearest service:", error);
         } finally {
-            setLoading(true);
+            setLoading(false);
         }
     };
 
     return (
         <div className="grid grid-cols-16 gap-1 p-2">
-            {grid.map((row, rowIndex) =>
-                row.map((cell, colIndex) => (
-                    <div
-                        key={`${rowIndex}-${colIndex}`}
-                        className={`w-10 h-10 flex items-center justify-center border ${cell === "X"
-                            ? "bg-red-500 text-white"
-                            : cell === "Y"
-                                ? "bg-blue-500 text-white"
-                                : cell === "U"
-                                    ? "bg-green-500 text-white"
-                                    : "bg-gray-200"
-                            } cursor-pointer ${nearestService &&
-                                nearestService.row === rowIndex &&
-                                nearestService.col === colIndex
-                                ? "border-4 border-yellow-500" // Highlight nearest result
-                                : ""
-                            } ${path.some(([r, c]) => r === rowIndex && c === colIndex)
-                                ? "border-4 border-green-500" // Highlight the path with green border
-                                : ""
-                            }`}
-                        onClick={() => handleCellClick(rowIndex, colIndex)}
-                    >
-                        {cell}
-                    </div>
-                ))
-            )}
+            {
+                grid.map((row: any[], rowIndex: any) =>
+                    row.map((cell: any, colIndex: any) => (
+                        <div
+                            key={`${rowIndex}-${colIndex}`}
+                            className={getCellStyles(cell, rowIndex, colIndex, nearestService, path)}
+                            onClick={() => handleCellClick(rowIndex, colIndex)}
+                        >
+                            {cell}
+                        </div>
+                    ))
+                )
+            }
         </div>
     );
 }

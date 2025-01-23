@@ -1,11 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
+import ReactDOM from "react-dom/client";
 import { ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "react-query";
+
+import "./index.css";
 import App from "./App.tsx";
 import store from "./redux/store.ts";
-import "./index.css";
 
 // Create a QueryClient instance
 const queryClient = new QueryClient();

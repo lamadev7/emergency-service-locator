@@ -1,6 +1,6 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { toast } from 'react-toastify';
+import { useDispatch } from "react-redux";
 import { setNearestServiceInfo } from "../redux/slices/index.ts";
 import { getServiceAvailability, updateServiceAvailability } from "../services/index.ts";
 
@@ -15,7 +15,8 @@ function NearestServiceDisplay({ nearestServiceInfo }) {
 
             await updateServiceAvailability(id, newStatus);
             const serviceInfo = await getServiceAvailability(id);
-            dispatch(setNearestServiceInfo({ ...nearestServiceInfo, status: serviceInfo?.status }));
+
+            dispatch(setNearestServiceInfo({ ...nearestServiceInfo, status: serviceInfo == 'open' ? 'open' : 'close' }));
             toast.success("Status updated successfully!");
         } catch (error) {
             console.error("Error updating service status:", error);

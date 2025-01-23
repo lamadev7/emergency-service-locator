@@ -22,10 +22,10 @@ export const fetchAmbulanceServices = async () => {
 
 export const calculateNearestService = async (currentLocation: [number, number]) => {
     try {
-        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/services/nearest`, {
-            currentLocation,
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/services/nearest`, {
+            params: { currentLocation },
         });
-        return response?.data;
+        return response?.data?.data;
     } catch (error) {
         console.error("Error fetching nearest services:", error);
         return [];
@@ -36,7 +36,7 @@ export const calculateNearestService = async (currentLocation: [number, number])
 export const getServiceAvailability = async (serviceId: string) => {
     try {
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/services/status`, { params: { serviceId } });
-        return response?.data;
+        return response?.data?.data;
     } catch (error) {
         console.error("Error fetching ambulance services:", error);
         return [];
@@ -49,7 +49,7 @@ export const updateServiceAvailability = async (serviceId: string, status: strin
             serviceId,
             status
         });
-        return response?.data;
+        return response?.data?.data;
     } catch (error) {
         console.error("Error fetching nearest services:", error);
         return [];
